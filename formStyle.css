@@ -37,7 +37,7 @@ button:hover {
 
 /* Avatar image */
 img.avatar {
-    width: 40%;
+    width: 30%;
     border-radius: 50%;
 }
 
@@ -93,4 +93,8 @@ a {
 .signin {
     background-color: #f1f1f1;
     text-align: center;
+}
+
+span {
+    color: red;
 }
