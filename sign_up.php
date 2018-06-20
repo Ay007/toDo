@@ -1,9 +1,9 @@
 <?php
-    session_start();
+
+    require_once 'db_manager.php';
 
     $username = $password = $passwordRep = "";
     $userErr = $passwordErr = $passwordRepErr = "";
-    $isError = false;
     
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = test_input($_POST['uname']);
@@ -12,6 +12,9 @@
             $isError = true;
         }else if (!preg_match("/^[a-zA-Z ]*$/",$username)) {
             $userErr = "Only letters and white space allowed"; 
+            $isError = true;
+        }else if (isNameExist($username)) {
+            $userErr = "Username already exists";
             $isError = true;
         }
 
@@ -28,11 +31,15 @@
         } else {
             $passwordRep = $_POST['psw-repeat'];
         }
-        if (!$isError) {
-        
+        if (!isset($isError)) {
+            if (!createNewUser($username, $password)) {
+                $userErr = "Something went wrong";
+            }else {
+                header('location: index.php');
+            }
         }
     }
-    
+
     function test_input($data) {
         $data = trim($data);
         $data = stripslashes($data);

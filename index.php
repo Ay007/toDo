@@ -33,7 +33,7 @@
             </a>
         </div>
         <div class="container signin">
-            <span>Forgot <a href="#">password?</a></span>
+            <p>Forgot <a href="#">password?</a></p>
             <footer>
                 <cite>Bot Image gotten from <a href="https://www.google.com.ng/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiyoPzI7OHbAhVJxRQKHQjZBkQQjRx6BAgBEAU&url=https%3A%2F%2Fchatbotsmagazine.com%2Fto-build-a-successful-chatbot-ask-these-5-questions-b7fe3776c74c&psig=AOvVaw0d3QoVUHXebVRrMww1hac0&ust=1529570576470176" target="_blank">here</a></cite>
             </footer>
