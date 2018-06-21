@@ -1,5 +1,31 @@
 <?php
     session_start();
+
+    require_once 'db_manager.php';
+
+    $_SESSION['userName'] = "";
+    $error = "";
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $_SESSION['userName'] = $_POST['uname'];
+        $id = isNameExist($_SESSION['userName'], true);
+        if ($id != -1) {
+            if (passwordTest($_POST['psw'], $id-1)) {
+                header('location: to_do_list.php');
+            } else {
+                $error = "Password is incorrect<br />";
+                $isError = true;
+            }
+        }else {
+            $error = "Username does not exist<br />";
+            $isError = true;
+        }
+    }elseif ($_SERVER["REQUEST_METHOD"] == "GET") {
+        if (isset($_GET['alert'])) {
+            $msg = $_GET['alert']."!";
+            echo "<script type='text/javascript'>alert('$msg');</script>";
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,8 +41,8 @@
             <div class="imgcontainer">
                 <img src="images/chat_bot.png" alt="Avatar" class="avatar">
             </div>
-
             <div class="container">
+                <?php echo "<span>".$error."</span>"; ?>
                 <label for="uname"><b>Username</b><br /></label>
                 <input type="text" placeholder="Enter Username" name="uname" required><br />
 

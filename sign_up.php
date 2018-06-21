@@ -35,7 +35,7 @@
             if (!createNewUser($username, $password)) {
                 $userErr = "Something went wrong";
             }else {
-                header('location: index.php');
+                header('location: index.php?alert=Account+created+successfully');
             }
         }
     }
