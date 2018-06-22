@@ -26,11 +26,11 @@
                             $iName = $row['item_name'];
                             $done = ($row['checked']) ? "done" : "" ;
                             $listString = "<li><span class=\"item $done\">$iName</span>";
+                            $idElement = $row['id'];
                             if (!$row['checked']) {
-                                $idElement = $row['id'];
                                 $listString.= "<a href=\"engine/mark.php?check=true&id=$idElement\" class=\"checker\">Mark as done</a>";
                             }
-                            $listString.= "<a href=\"#\" class=\"desc\"> +</a><a href=\"#\" class=\"remove\"> x</a></li>";
+                            $listString.= "<a href=\"#\" class=\"desc\"> +</a><a href=\"engine/delete.php?delete=true&id=$idElement\" class=\"remove\"> x</a></li>";
                             echo $listString;
                         }
                     } else {
