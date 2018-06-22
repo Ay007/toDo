@@ -47,7 +47,7 @@
             die("Connection failed: " . $conn->connect_error);
         } 
 
-        $sql = "SELECT * FROM MyUsers ORDER BY id LIMIT $userID, 1";
+        $sql = "SELECT * FROM MyUsers WHERE id=$userID";
         $result = $conn->query($sql);
 
         $correctPassword = false;
@@ -75,38 +75,14 @@
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         } 
-        $created = false;
-        // sql to create table
-        $sql = "CREATE TABLE $name (
-        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
-        firstname VARCHAR(30) NOT NULL,
-        lastname VARCHAR(30) NOT NULL,
-        email VARCHAR(50),
-        reg_date TIMESTAMP
-        )";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Table MyGuests created successfully";
-            $created = true;
-        } else {
-            echo "Error creating table: " . $conn->error;
-        }
-        $conn->close();
-
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        } 
+        
         $sql = "INSERT INTO MyUsers (username, passwrd)
         VALUES ('$name', '$pass')";
 
         if ($conn->query($sql) === TRUE) {
-            $last_id = $conn->insert_id;
-            $created = "New record created successfully. Last inserted ID is: " . $last_id;
+            $created = true;
         } else {
-            $created = "Error: " . $sql . "<br>" . $conn->error;
+            $created = false;
         }
 
         $conn->close();

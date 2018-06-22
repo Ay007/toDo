@@ -3,14 +3,12 @@
 
     require_once 'db_manager.php';
 
-    $_SESSION['userName'] = "";
     $error = "";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $_SESSION['userName'] = $_POST['uname'];
-        $id = isNameExist($_SESSION['userName'], true);
+        $_SESSION['userID'] = isNameExist($_POST['uname'], true);
         if ($id != -1) {
-            if (passwordTest($_POST['psw'], $id-1)) {
+            if (passwordTest($_POST['psw'], $id)) {
                 header('location: to_do_list.php');
             } else {
                 $error = "Password is incorrect<br />";
