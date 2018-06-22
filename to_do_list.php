@@ -1,22 +1,10 @@
 <?php
-    session_start();
     require_once 'engine/initialize.php';
 
     $prepStatement = $conn->prepare("SELECT id, item_name, checked FROM itemsToDo WHERE userID=?");
     $prepStatement->bind_param("i", $_SESSION['userID']);
     $prepStatement->execute();
     $queryResult = $prepStatement->get_result();
-    if ($queryResult->num_rows > 0) {
-        while($row = $queryResult->fetch_assoc()) {
-            if (strtolower($row['username']) == strtolower($name)) {
-                //name exists
-                $exist = true;
-                $userID = $row['id'];
-                break;
-            }
-        }
-    }
-
     $prepStatement->close();
 ?>
 <!DOCTYPE html>
@@ -32,14 +20,27 @@
         <div>
             <h1>To do</h1>
             <ul class="items">
-                <li>
-                    <span class="item">Some undone</span> <a href="#" class="checker">Mark as done</a><a href="#" class="desc"> +</a><a href="#" class="remove"> x</a>
-                </li>
-                <li>
-                    <span class="item done">Some done</span> <a href="#"> +</a><a href="#"> x</a>
-                </li>
+                <?php
+                    if (!empty($queryResult)) {
+                        while($row = $queryResult->fetch_assoc()) {
+                            $iName = $row['item_name'];
+                            $done = ($row['checked']) ? "done" : "" ;
+                            $listString = "<li><span class=\"item $done\">$iName</span>";
+                            if (!$row['checked']) {
+                                $idElement = $row['id'];
+                                $listString.= "<a href=\"engine/mark.php?check=true&id=$idElement\" class=\"checker\">Mark as done</a>";
+                            }
+                            $listString.= "<a href=\"#\" class=\"desc\"> +</a><a href=\"#\" class=\"remove\"> x</a></li>";
+                            echo $listString;
+                        }
+                    } else {
+                        echo "You haven't added any item to your list. Use the field below to add your first item.";
+                    }
+                    
+                     
+                ?>
             </ul>
-            <form action="add.php">
+            <form action="engine/add.php" method="post">
                 <input type="text" name="itemName" placeholder="Enter a new item" required>
                 <button type="submit">Add</button>
             </form>
