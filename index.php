@@ -7,8 +7,8 @@
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['userID'] = isNameExist($_POST['uname'], true);
-        if ($id != -1) {
-            if (passwordTest($_POST['psw'], $id)) {
+        if ($_SESSION['userID'] != -1) {
+            if (passwordTest($_POST['psw'], $_SESSION['userID'])) {
                 header('location: to_do_list.php');
             } else {
                 $error = "Password is incorrect<br />";

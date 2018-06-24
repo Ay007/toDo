@@ -21,7 +21,7 @@
             <h1>To do</h1>
             <ul class="items">
                 <?php
-                    if (!empty($queryResult)) {
+                    if ($queryResult->num_rows > 0) {
                         while($row = $queryResult->fetch_assoc()) {
                             $iName = $row['item_name'];
                             $done = ($row['checked']) ? "done" : "" ;
@@ -34,10 +34,9 @@
                             echo $listString;
                         }
                     } else {
-                        echo "You haven't added any item to your list. Use the field below to add your first item.";
+                        echo "<li>You haven't added any item to your list. Use the field below to add your first item.</li>";
                     }
                     
-                     
                 ?>
             </ul>
             <form action="engine/add.php" method="post">

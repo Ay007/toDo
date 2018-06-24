@@ -1,6 +1,5 @@
 <?php
     session_start();
-    $_SESSION['userID'] = 1;
     $servername = "localhost";
     $username = "testUser";
     $password = "password123";
