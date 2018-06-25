@@ -13,7 +13,7 @@
         }
     }
 
-    header('location: ../to_do_list.php');
+    header('location: load_list.php');
 
 
     function test_input($data) {

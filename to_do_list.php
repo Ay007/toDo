@@ -1,11 +1,5 @@
 <?php
     require_once 'engine/initialize.php';
-;
-    $prepStatement = $conn->prepare("SELECT id, item_name, checked FROM itemsToDo WHERE userID=?");
-    $prepStatement->bind_param("i", $user->id);
-    $prepStatement->execute();
-    $queryResult = $prepStatement->get_result();
-    $prepStatement->close();
 ?>
 <!DOCTYPE html>
 <html>
@@ -43,29 +37,10 @@
     
             </div>
     
-            <ul class="items">
-                <?php
-                    if ($queryResult->num_rows > 0) {
-                        while($row = $queryResult->fetch_assoc()) {
-                            $iName = $row['item_name'];
-                            $done = ($row['checked']) ? "done" : "" ;
-                            $listString = "<li><span class=\"item $done\">$iName</span>";
-                            $idElement = $row['id'];
-                            if (!$row['checked']) {
-                                $listString.= "<a href=\"engine/mark.php?check=true&id=$idElement\" class=\"checker\">Mark as done</a>";
-                            }
-                            $listString.= "<span class=\"desc\"> +</span><a href=\"engine/delete.php?delete=true&id=$idElement\" class=\"remove\"> x</a></li>";
-                            echo $listString;
-                        }
-                    } else {
-                        echo "<li>You haven't added any item to your list. Use the field below to add your first item.</li>";
-                    }
-                    
-                ?>
-            </ul>
+            <ul class="items"><?php require_once 'engine/load_list.php'; ?></ul>
             <form action="engine/add.php" method="post">
-                <input type="text" name="itemName" placeholder="Enter a new item" required>
-                <button type="submit">Add</button>
+                <input id="newEntry" type="text" name="itemName" placeholder="Enter a new item" required>
+                <button id="submit" type="submit">Add</button>
             </form>
             
             
@@ -77,16 +52,67 @@
             // Get the modal
             var modal = document.getElementById('myModal');
 
-            // Get the button that opens the modal
-            var btn = document.getElementsByClassName("desc")[0];
+            function getButtons() {
+        
+                //Get buttons
+                var desc_btns = document.getElementsByClassName("desc");
+                for (i = 0; i < desc_btns.length; i++) {
+                    desc_btns.item(i).addEventListener("click", describe);
+                }
+                
+                var delete_btns = document.getElementsByClassName("remove");
+                for (i = 0; i < delete_btns.length; i++) {
+                    delete_btns.item(i).addEventListener("click", remove);
+                }
 
+                var mark_btns = document.getElementsByClassName("checker");
+                for (i = 0; i < mark_btns.length; i++) {
+                    mark_btns.item(i).addEventListener("click", check);
+                }
+            }
+            
+            var submit_btn = document.getElementById("submit");
+            submit_btn.addEventListener("click", function(event) {
+                event.preventDefault();
+                addNew();
+            } );
+
+            getButtons();
+
+            function addNew() {
+                var input = document.getElementById("newEntry");
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST','engine/add.php',true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        listPlace.innerHTML = xhr.responseText;
+                        input.value = "";
+                        
+                        getButtons();
+                    }
+                }
+                xhr.send("itemName="+input.value);
+            }
+
+            function describe() {
+                modal.style.display = "block";
+
+                // use AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET','engine/decription.php',true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        console.log(xhr.responseText);
+                    }
+                }
+                xhr.send();
+            }  
+            
             // Get the <span> element that closes the modal
             var span = document.getElementsByClassName("close")[0];
-
-            // When the user clicks the button, open the modal 
-            btn.onclick = function() {
-                modal.style.display = "block";
-            }
 
             // When the user clicks on <span> (x), close the modal
             span.onclick = function() {
@@ -99,6 +125,37 @@
                     modal.style.display = "none";
                 }
             }
+
+            var listPlace = document.getElementsByClassName("items")[0];
+            function remove() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST','engine/delete.php',true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        listPlace.innerHTML = xhr.responseText;
+                        
+                        getButtons();
+                    }
+                }
+                xhr.send("id="+this.id);
+            }  
+
+            function check() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST','engine/mark.php',true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        listPlace.innerHTML = xhr.responseText;
+                        
+                        getButtons();
+                    }
+                }
+                xhr.send("id="+this.id);
+            }  
         </script>
 
     </body>
