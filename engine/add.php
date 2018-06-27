@@ -7,7 +7,7 @@
 
         if (!empty($itemName)) {
             $queryStatement = $conn->prepare("INSERT INTO itemsToDo (item_name, checked, userID) VALUES (?, 0, ?)");
-            $queryStatement->bind_param("si", $itemName, $_SESSION['userID']);
+            $queryStatement->bind_param("si", $itemName, $user->id);
             $queryStatement->execute();
             $queryStatement->close();
         }

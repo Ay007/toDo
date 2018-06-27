@@ -1,14 +1,16 @@
 <?php
     session_start();
-
+    require_once 'guard.php';
     require_once 'db_manager.php';
 
     $error = "";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $_SESSION['userID'] = isNameExist($_POST['uname'], true);
-        if ($_SESSION['userID'] != -1) {
-            if (passwordTest($_POST['psw'], $_SESSION['userID'])) {
+        $user = isNameExist($_POST['uname']);
+
+        if ($user != null) {
+            if (passwordTest($_POST['psw'], $user->id)) {
+                $_SESSION['user'] = $user;
                 header('location: to_do_list.php');
             } else {
                 $error = "Password is incorrect<br />";

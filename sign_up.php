@@ -1,5 +1,6 @@
 <?php
-
+    session_start();
+    require_once 'guard.php';
     require_once 'db_manager.php';
 
     $username = $password = $passwordRep = "";
@@ -7,13 +8,14 @@
     
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = test_input($_POST['uname']);
+        
         if (empty($username)) {
             $userErr = "Input a username";
             $isError = true;
-        }else if (!preg_match("/^[a-zA-Z ]*$/",$username)) {
+        } else if (!preg_match("/^[a-zA-Z ]*$/",$username)) {
             $userErr = "Only letters and white space allowed"; 
             $isError = true;
-        }else if (isNameExist($username)) {
+        }else if (isNameExist($username) != null) {
             $userErr = "Username already exists";
             $isError = true;
         }
@@ -31,19 +33,20 @@
         } else {
             $passwordRep = $_POST['psw-repeat'];
         }
+
         if (!isset($isError)) {
-            if (!createNewUser($username, $password)) {
-                $userErr = "Something went wrong";
+            $user = createNewUser($username, $password);
+            if ($user == null) {
+                $userErr = "Something went wrong, please try again later";
             }else {
-                header('location: index.php?alert=Account+created+successfully');
+                $_SESSION['user'] = $user;
+                header('location: to_do_list.php');
             }
         }
     }
 
     function test_input($data) {
         $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
         return $data;
     }
 ?>

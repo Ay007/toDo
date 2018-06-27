@@ -4,11 +4,17 @@
     $username = "testUser";
     $password = "password123";
     $dbname = "todoDB";
+    // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
+    // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
-    } 
-    if (!isset($_SESSION['userID'])) {
-        die('You are not signed in.');
+        return false;
     }
+
+    if (!isset($_SESSION['user'])) {
+        header ('Location:./');
+    }
+
+    $user = $_SESSION['user'];
 ?>

@@ -1,8 +1,8 @@
 <?php
     require_once 'engine/initialize.php';
-
+;
     $prepStatement = $conn->prepare("SELECT id, item_name, checked FROM itemsToDo WHERE userID=?");
-    $prepStatement->bind_param("i", $_SESSION['userID']);
+    $prepStatement->bind_param("i", $user->id);
     $prepStatement->execute();
     $queryResult = $prepStatement->get_result();
     $prepStatement->close();
@@ -18,7 +18,31 @@
     </head>
     <body>
         <div>
+            <span >
+                <a href="engine/logout.php" class="logout">Sign out</a>
+            </span>
             <h1>To do</h1>
+            <small><i>Welcome back <?php echo $user->username ?></i></small>
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="close">&times;</span>
+                        <h2>Description</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p>Some text in the Modal Body</p>
+                        <p>Some other text...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button style="margin-left:50px">Update</button><button style="margin-right:50px; float: right; background: rgb(177, 25, 25)">Clear</button>
+                    </div>
+                </div>
+    
+            </div>
+    
             <ul class="items">
                 <?php
                     if ($queryResult->num_rows > 0) {
@@ -30,7 +54,7 @@
                             if (!$row['checked']) {
                                 $listString.= "<a href=\"engine/mark.php?check=true&id=$idElement\" class=\"checker\">Mark as done</a>";
                             }
-                            $listString.= "<a href=\"#\" class=\"desc\"> +</a><a href=\"engine/delete.php?delete=true&id=$idElement\" class=\"remove\"> x</a></li>";
+                            $listString.= "<span class=\"desc\"> +</span><a href=\"engine/delete.php?delete=true&id=$idElement\" class=\"remove\"> x</a></li>";
                             echo $listString;
                         }
                     } else {
@@ -43,38 +67,18 @@
                 <input type="text" name="itemName" placeholder="Enter a new item" required>
                 <button type="submit">Add</button>
             </form>
-
+            
+            
         </div>
 
-        <!-- Trigger/Open The Modal -->
-        <!-- <button id="myBtn">Open Modal</button> -->
+        
 
-        <!-- The Modal -->
-        <!-- <div id="myModal" class="modal"> -->
-
-            <!-- Modal content -->
-            <!-- <div class="modal-content">
-                <div class="modal-header">
-                <span class="close">&times;</span>
-                <h2>Modal Header</h2>
-                </div>
-                <div class="modal-body">
-                <p>Some text in the Modal Body</p>
-                <p>Some other text...</p>
-                </div>
-                <div class="modal-footer">
-                <h3>Modal Footer</h3>
-                </div>
-            </div>
-
-        </div> -->
-
-        <!-- <script>
+        <script>
             // Get the modal
             var modal = document.getElementById('myModal');
 
             // Get the button that opens the modal
-            var btn = document.getElementById("myBtn");
+            var btn = document.getElementsByClassName("desc")[0];
 
             // Get the <span> element that closes the modal
             var span = document.getElementsByClassName("close")[0];
@@ -95,7 +99,7 @@
                     modal.style.display = "none";
                 }
             }
-        </script> -->
+        </script>
 
     </body>
 </html>
