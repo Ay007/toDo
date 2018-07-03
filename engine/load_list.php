@@ -16,7 +16,7 @@
             if (!$row['checked']) {
                 $listString.= "<span class=\"checker\" id=\"$idElement\">Mark as done</span>";
             }
-            $listString.= "<span class=\"desc\"> +</span><span class=\"remove\" id=\"$idElement\"> x</span></li>";
+            $listString.= "<span class=\"desc\" id=\"$idElement\"> +</span><span class=\"remove\" id=\"$idElement\"> x</span></li>";
             echo $listString;
         }
     } else {

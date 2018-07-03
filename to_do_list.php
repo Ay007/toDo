@@ -31,7 +31,7 @@
                         <p>Some other text...</p>
                     </div>
                     <div class="modal-footer">
-                        <button style="margin-left:50px">Update</button><button style="margin-right:50px; float: right; background: rgb(177, 25, 25)">Clear</button>
+                        <button id="desc_update" style="margin-left:350px">Update</button><button style="margin-right:50px; float: right; background: rgb(177, 25, 25); display:none">Cancel</button>
                     </div>
                 </div>
     
@@ -98,17 +98,21 @@
 
             function describe() {
                 modal.style.display = "block";
+                var location = document.getElementsByClassName("modal-body")[0];
 
                 // use AJAX
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','engine/decription.php',true);
+                xhr.open('POST','engine/decription.php',true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                 xhr.onreadystatechange = function(){
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         console.log(xhr.responseText);
+
+                        location.innerHTML = xhr.responseText;
                     }
                 }
-                xhr.send();
+                xhr.send("id="+this.id);
             }  
             
             // Get the <span> element that closes the modal
